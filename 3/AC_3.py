@@ -5,6 +5,26 @@ def parse_to_list(filename) -> list[str]:
         rucksacks = f.read().split()
     return rucksacks
 
-rucksacks = parse_to_list(FILENAME)
-for r in rucksacks:
-    print(len(r))
+def split_rucksack(line) -> list:
+    l = int((len(line))/2)
+    return [line[:l], line[l:]] 
+
+def convert_to_number(ch) -> int:
+    if ch.islower():
+        return ord(ch) - 96
+    else:
+        return ord(ch) - 38
+
+def found_letter(line) -> str:
+    half1 = list(set([letter for letter in line[0]]))
+    for letter in line[1]:
+        if letter in half1:
+            return letter
+
+def sum_items(rucksacks) -> int:
+    total = 0
+    return sum([convert_to_number(found_letter(r)) for r in rucksacks])
+
+lista = parse_to_list(FILENAME)
+rucksacks = [split_rucksack(line) for line in lista] 
+print(sum_items(rucksacks))
