@@ -10,10 +10,7 @@ def split_rucksack(line) -> list:
     return [line[:l], line[l:]] 
 
 def convert_to_number(ch) -> int:
-    if ch.islower():
-        return ord(ch) - 96
-    else:
-        return ord(ch) - 38
+    return ord(ch) - 96 if ch.islower() else ord(ch) - 38
 
 def found_letter(line) -> str:
     half1 = list(set([letter for letter in line[0]]))
