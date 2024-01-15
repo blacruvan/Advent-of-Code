@@ -4,10 +4,10 @@ FILENAME = './2./input.txt'
 
 def parse_to_list(filename: str) -> list[list[str]]:
     with open(filename, encoding='utf-8') as f:
-        rounds = f.read().split('\n')
+        rounds = f.read().strip().split('\n')
     return [round.split(' ') for round in rounds]
 
-def to_shape(ch) -> str:
+def to_shape(ch):
     if ch=='A' or ch == 'X':
         return 'rock'
     elif  ch=='B' or ch == 'Y':
@@ -15,24 +15,35 @@ def to_shape(ch) -> str:
     else:
         return 'scissors'
 
-def win(shape) -> str:
+def win(shape):
     if shape=='rock': return 'paper'
     elif shape=='paper': return 'scissors'
     else: return 'rock'
 
+def lose(shape):
+    if shape=='rock': return 'scissors'
+    elif shape=='paper': return 'rock'
+    else: return 'scissors'
+
+def shape_score(shape):
+    if shape=='rock': return 1
+    elif shape=='paper': return 2
+    else: return 3
+
 def play_score(opponent, me) -> int:
-    opponent, me = to_shape(opponent), to_shape(me)
-    if opponent == me:
-        return 3
-    elif win(opponent)==me:
-        return 6
-    else: return 0
+    opponent = to_shape(opponent)
+
+    if me == 'X':
+        return 0 + shape_score(lose(opponent))
+    elif me == 'Y': 
+        return 3 + shape_score(opponent)
+    else:
+        return 6 + shape_score(win(opponent))
 
 def total_score(list: list) -> int:
     scores = []
     total = 0
     for play in list:
-        total += (1 if play[1]=='X' else (2 if play[1]=='Y' else 3))
         total += play_score(play[0], play[1])
         scores.append(total)
         total = 0

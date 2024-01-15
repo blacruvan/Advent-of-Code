@@ -11,7 +11,7 @@ def parse_stack(str) -> list[list[str]]:
     length = 0
     lines = str.split('\n')
     for line in lines:
-        if not line.startswith(' 1'): characters.append(re.findall(r'\w', line.replace('   ', '0')))
+        if not line.startswith(' 1'): characters.append(re.findall(r'\w', line.replace('    ', '0')))
         else: length = len(line.split())
     
     stacks = [[] for _ in range(length)]

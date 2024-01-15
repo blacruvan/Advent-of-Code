@@ -3,7 +3,7 @@ FILENAME = '4/input.txt'
 
 def parse_to_list(filename) -> list[list[int, int]]:
     with open(filename, encoding='utf-8') as f:
-        lines = f.read().split('\n')
+        lines = f.read().strip().split('\n')
         list = []
         for line in lines:
             a, b, c, d = re.split(r'[-,]', line)
