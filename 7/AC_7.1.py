@@ -1,16 +1,9 @@
-from typing import Union
-
-FILENAME = '7/short_input.txt'
-PATH = '/'
-initial = None
+FILENAME = '7/input.txt'
 
 def read_input(filename):
     with open(filename, encoding='utf-8') as f:
-        lines = f.read().split('\n')
+        lines = f.read().strip().split('\n')
     return lines
-
-def modify_path(command):
-    ...
 
 class File:
     def __init__(self, name, size: int) -> None:
@@ -22,16 +15,47 @@ class Directory:
         self.name = name
         self.content = []
         self.parent = parent
+        self.size = 0
 
     def addContent(self, element):
         self.content.append(element)
     
     def getContent(self, name: str):
         return next(filter(lambda x: x.name == name, self.content), None)
+    
+    def dir_size(self, dir):
+        for item in self.content:
+            if isinstance(item, Directory):
+                item.dir_size(dir)
+                
+            elif isinstance(item, File):
+                dir.size +=  item.size
+    
+    def printContent(self):
+        for item in self.content:
+            if isinstance(item, Directory):
+                print(item.name, item.size)
+                item.printContent()
+                
+            elif isinstance(item, File):
+                print(item.size, item.name)
 
-def directory_size():
-    ...
+def initialize_sizes(dir):
+    for item in dir.content:
+        if isinstance(item, Directory):
+            item.dir_size(item)
+            initialize_sizes(item)
 
+def sum_directories(root: Directory, topSize):
+    pending = [root]
+    list = []
+    while pending:
+        actual = pending.pop()
+        for hijo in actual.content:
+            if isinstance(hijo, Directory):
+                if hijo.size < topSize: list.append(hijo.size)
+                pending.append(hijo)
+    return sum(list)
 
 def main(commands):
     commands = commands[1:]
@@ -54,40 +78,7 @@ def main(commands):
         elif c[0].isdigit():
             newFile = File(c[1], int(c[0]))
             current.addContent(newFile)
+    initialize_sizes(initial)
+    print(sum_directories(initial, 100000))
 
-commands = read_input(FILENAME)
-main(commands)
-
-
-#print(vars(initial))
-
-
-
-
-
-def findChilds(dir, path=[]):
-    if not dir.content:
-        yield path
-    else:
-        for c in dir.content:
-            print(c.name)
-            if isinstance(c, Directory):
-                yield from findChilds(c, path+[c])
-
-findChilds(initial, [initial])
-
-
-
-"""abiertos, cerrados = [initial], []            
-string = ''
-while abiertos:
-    actual = abiertos.pop()
-    for c in actual.content:
-        print(string,c.name)
-        if isinstance(c, Directory):
-            abiertos.append(c)
-    string += '\t'
-    """
-#print(vars(current))
-#print(commands)
-
+main(read_input(FILENAME))

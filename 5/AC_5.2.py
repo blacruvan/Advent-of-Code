@@ -29,11 +29,7 @@ def parse_moves(str) -> list[list[int]]:
 def make_move(move) -> list[list[str]]:
     global crates_stacks
     amount, origin, destination = move[0], move[1]-1, move[2]-1
-    temp = []
-    for x in range(amount):
-        if crates_stacks[origin]:
-            temp.append(crates_stacks[origin].pop())
-    temp = reversed(temp)
+    temp = reversed([crates_stacks[origin].pop() for x in range(amount) if crates_stacks[origin]])
     crates_stacks[destination].extend(temp)
 
 def get_message(stacks):
