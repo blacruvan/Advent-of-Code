@@ -53,6 +53,7 @@ def sum_directories(root: Directory, topSize):
         actual = pending.pop()
         for hijo in actual.content:
             if isinstance(hijo, Directory):
+                print(hijo.size)
                 if hijo.size < topSize: list.append(hijo.size)
                 pending.append(hijo)
     return sum(list)

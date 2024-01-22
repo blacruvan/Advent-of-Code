@@ -1,6 +1,4 @@
-from typing import Union
-
-FILENAME = '7/short_input.txt'
+FILENAME = '7/input.txt'
 TOTAL_SPACE, UPDATE_SPACE = 70000000, 30000000
 initial = None
 
@@ -34,15 +32,6 @@ class Directory:
                 
             elif isinstance(item, File):
                 dir.size +=  item.size
-    
-    def printContent(self):
-        for item in self.content:
-            if isinstance(item, Directory):
-                print(item.name, item.size)
-                item.printContent()
-                
-            elif isinstance(item, File):
-                print(item.size, item.name)
 
 def initialize_sizes(dir):
     for item in dir.content:
@@ -50,16 +39,16 @@ def initialize_sizes(dir):
             item.dir_size(item)
             initialize_sizes(item)
 
-def sum_directories(root: Directory, topSize):
+def found_dir(root: Directory, espaceToDelete):
     pending = [root]
     list = []
     while pending:
         actual = pending.pop()
         for hijo in actual.content:
             if isinstance(hijo, Directory):
-                if hijo.size < topSize: list.append(hijo.size)
+                if hijo.size >= espaceToDelete: list.append(hijo.size)
                 pending.append(hijo)
-    return sum(list)
+    return min(list)
 
 def space_to_delete(disk, update, used):
     update = disk - update
@@ -86,15 +75,11 @@ def main(commands):
         elif c[0].isdigit():
             newFile = File(c[1], int(c[0]))
             current.addContent(newFile)
-
-    initial.dir_size(initial)
-    used_space = initial.size
-    print(space_to_delete(TOTAL_SPACE, UPDATE_SPACE, used_space))
-    initialize_sizes(initial)
-
-    print(used_space)
     
-
+    initialize_sizes(initial)
+    initial.dir_size(initial)
+    espaceToDelete = space_to_delete(TOTAL_SPACE, UPDATE_SPACE, initial.size)
+    print(found_dir(initial, espaceToDelete))
 
 commands = read_input(FILENAME)
 main(commands)
